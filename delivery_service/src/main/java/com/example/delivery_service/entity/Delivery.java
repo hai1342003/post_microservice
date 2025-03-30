@@ -1,9 +1,7 @@
 package com.example.delivery_service.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.example.order_service.entity.Order;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,5 +28,6 @@ public class Delivery {
     private Double shippingCost;
     private String deliveryMethod;
 
-    private Long orderId;
+
+    private Long OrderId;
 }

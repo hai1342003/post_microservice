@@ -15,20 +15,34 @@ import java.util.List;
 @Service
 public class DeliveryService {
 
-    @Autowired
-    private final RestTemplate restTemplate;
-
 
     @Autowired
     private DeliveryRepository deliveryRepository;
 
-    public DeliveryService(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
+
+    @Autowired
+    private final OrderClient orderClient;
+
+    public DeliveryService(OrderClient orderClient) {
+        this.orderClient = orderClient;
     }
 
-    public OrderDTO getOrderStatus(Long orderId) {
-        String apiUrl = "http://localhost:8084/api/orders" + orderId;
-        return restTemplate.getForObject(apiUrl, OrderDTO.class);
+
+    public OrderDTO getOrderDetails(Long orderId) {
+        return orderClient.getOrderById(orderId);
+    }
+
+    public OrderDTO updateOrderStatus(Long orderId, String status) {
+
+        return orderClient.updateOrderStatus(orderId, status);
+    }
+
+    public List<OrderDTO> getAllOrders() {
+        return orderClient.getAllOrders();
+    }
+
+    public List<OrderDTO> getPendingOrders() {
+        return orderClient.getPendingOrders();
     }
 
     // Tạo mới một delivery
