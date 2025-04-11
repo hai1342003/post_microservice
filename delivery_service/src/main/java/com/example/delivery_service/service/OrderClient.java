@@ -21,7 +21,7 @@ public interface OrderClient {
     @PutMapping("/api/orders/{orderId}/status")
     OrderDTO updateOrderStatus(@PathVariable Long orderId, @RequestParam String status);
 
-    // Khi shipper muốn lấy danh sách đơn hàng cần giao hôm nay
+    // Khi shipper muốn lấy danh sách đơn hàng cần giao
     @GetMapping("/api/orders/pending-deliveries")
     List<OrderDTO> getPendingOrders();
 

@@ -17,6 +17,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="cart_service" target="17" />
       <module name="delivery-service (1)" target="17" />
       <module name="delivery-service (2)" target="17" />
       <module name="delivery-service (3)" target="17" />
@@ -32,6 +33,7 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="api-gateway" options="-parameters" />
+      <module name="cart_service" options="-parameters" />
       <module name="delivery-service" options="-parameters" />
       <module name="delivery-service (1)" options="-parameters" />
       <module name="delivery-service (2)" options="-parameters" />

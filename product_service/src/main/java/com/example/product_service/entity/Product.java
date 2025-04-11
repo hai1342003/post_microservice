@@ -5,7 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 
 @Entity
 @Data
@@ -27,9 +29,17 @@ public class Product {
     @Column(nullable = false)
     private Double price;
 
-    @Column(nullable = false)
-    private Integer stock;
-
     @Column(nullable = false, length = 50)
     private String category; // Danh mục sản phẩm
+
+    // Lưu chuỗi JSON dạng ["8GB", "16GB"] hoặc "8GB,16GB"
+    @Column(length = 100)
+    private String ram;
+
+    @Column(nullable = false)
+    private Boolean bestseller;
+
+    // Lưu tên file ảnh hoặc URL
+
+    private String image1;
 }

@@ -1,4 +1,4 @@
-package com.example.delivery_service.configuration;
+package com.example.delivery_service.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,4 +11,3 @@ public class AppConfig {
         return new RestTemplate();
     }
 }
-

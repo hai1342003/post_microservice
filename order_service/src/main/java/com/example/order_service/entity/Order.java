@@ -17,21 +17,27 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "orders")
 public class Order {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long customerId;
 
+    private Long userId;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")
-    @BatchSize(size = 10)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> items;
 
-    private Double totalPrice;
-    private LocalDateTime orderDate;
+    private Double amount;
 
-    @Enumerated(EnumType.STRING)
-    private OrderStatus status;
+    @Embedded
+    private Address address;
+
+    private String status = "Order Placed";
+
+    private String paymentMethod;
+
+    private Boolean payment = false;
+
+    private LocalDateTime date;
+
+    // getter/setter
 }

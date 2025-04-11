@@ -1,7 +1,7 @@
-package com.example.payment_service.controller;
+package com.example.cart_service.controller;
 
-import com.example.payment_service.dto.PaymentDTO;
-import com.example.payment_service.service.PaymentService;
+import com.example.cart_service.dto.PaymentDTO;
+import com.example.cart_service.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

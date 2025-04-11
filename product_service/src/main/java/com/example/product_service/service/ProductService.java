@@ -6,6 +6,7 @@ import com.example.product_service.entity.Product;
 import com.example.product_service.repository.ProductRepository;
 import com.example.product_service.specification.ProductSpecification;
 
+import java.util.Optional;
 import jakarta.persistence.Cacheable;
 import org.hibernate.query.Page;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,8 +45,10 @@ public class ProductService {
                         product.getName(),
                         product.getDescription(),
                         product.getPrice(),
-                        product.getStock(),
-                        product.getCategory()
+                        product.getCategory(),
+                        product.getRam(),
+                        product.getBestseller(),
+                        product.getImage1()
                 )).collect(Collectors.toList());
     }
 
@@ -63,14 +66,14 @@ public class ProductService {
 
         simulateSlowService();
         Product product = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
-        return new ProductDTO(product.getId(), product.getName(), product.getDescription(), product.getPrice(), product.getStock(), product.getCategory());
+        return new ProductDTO(product.getId(), product.getName(), product.getDescription(), product.getPrice(), product.getCategory(), product.getRam(), product.getBestseller(), product.getImage1());
     }
 
     public ProductDTO createProduct(ProductDTO productDTO) {
 
-        Product product = new Product(null, productDTO.getName(), productDTO.getDescription(), productDTO.getPrice(), productDTO.getStock(), productDTO.getCategory());
+        Product product = new Product(null, productDTO.getName(), productDTO.getDescription(), productDTO.getPrice(), productDTO.getCategory(), productDTO.getRam(), productDTO.getBestseller(), productDTO.getImage1());
         product = productRepository.save(product);
-        return new ProductDTO(product.getId(), product.getName(), product.getDescription(), product.getPrice(), product.getStock(), product.getCategory());
+        return new ProductDTO(product.getId(), product.getName(), product.getDescription(), product.getPrice(), product.getCategory(), product.getRam(), product.getBestseller(), product.getImage1());
     }
 
     @CacheEvict(value = "products", key = "#product.id")
@@ -79,9 +82,12 @@ public class ProductService {
         product.setName(productDTO.getName());
         product.setDescription(productDTO.getDescription());
         product.setPrice(productDTO.getPrice());
-        product.setStock(productDTO.getStock());
+        product.setCategory(productDTO.getCategory());
+        product.setRam(productDTO.getRam());
+        product.setBestseller(productDTO.getBestseller());
+        product.setImage1(product.getImage1());
         product = productRepository.save(product);
-        return new ProductDTO(product.getId(), product.getName(), product.getDescription(), product.getPrice(), product.getStock(), product.getCategory());
+        return new ProductDTO(product.getId(), product.getName(), product.getDescription(), product.getPrice(), product.getCategory(), product.getRam(), product.getBestseller(), product.getImage1());
     }
 
     public void deleteProduct(Long id) {
@@ -95,5 +101,14 @@ public class ProductService {
         } catch (InterruptedException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    public boolean deleteProductById(Long id) {
+        Optional<Product> productOpt = productRepository.findById(id); // dùng java.util.Optional
+        if (productOpt.isPresent()) {
+            productRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }

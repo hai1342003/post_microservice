@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/auth")
 public class AuthenticationController {
@@ -23,42 +25,46 @@ public class AuthenticationController {
         this.authenticationService = authenticationService;
     }
 
-
-
-
     @GetMapping("/validate")
-    public ResponseEntity<String> validateToken(@RequestHeader(value = "Authorization", required = false) String token) {
+    public ResponseEntity<?> validateToken(@RequestHeader(value = "Authorization", required = false) String token) {
         if (token == null || !token.startsWith("Bearer ")) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Missing or invalid Authorization header");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Missing or invalid Authorization header"));
         }
 
-        token = token.substring(7); // Bỏ "Bearer "
+        token = token.substring(7);
 
-        if (!jwtService.validateToken(token)) { // Kiểm tra token hợp lệ không
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Token");
+        if (!jwtService.validateToken(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Invalid Token"));
         }
-
         String username = jwtService.extractUsername(token);
-        return ResponseEntity.ok("Valid Token for user: " + username);
+
+        return ResponseEntity.ok(Map.of("message", "Valid Token", "username", username));
     }
+
 
 
     @PostMapping("/signup")
-    public ResponseEntity<User> register(@RequestBody RegisterUserDto registerUserDto) {
+    public ResponseEntity<?> register(@RequestBody RegisterUserDto registerUserDto) {
         User registeredUser = authenticationService.signup(registerUserDto);
 
-        return ResponseEntity.ok(registeredUser);
+        String jwtToken = jwtService.generateToken(registeredUser);
+
+        return ResponseEntity.ok(Map.of(
+                "success", true,
+                "token", jwtToken
+        ));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginUserDto loginUserDto) {
+    public ResponseEntity<?> authenticate(@RequestBody LoginUserDto loginUserDto) {
         User authenticatedUser = authenticationService.authenticate(loginUserDto);
-
         String jwtToken = jwtService.generateToken(authenticatedUser);
 
-        LoginResponse loginResponse = new LoginResponse(jwtToken, jwtService.getExpirationTime());
-
-
-        return ResponseEntity.ok(loginResponse);
+        return ResponseEntity.ok(Map.of(
+                "success", true,
+                "token", jwtToken,
+                "expiresAt", jwtService.getExpirationTime()
+        ));
     }
+
 }

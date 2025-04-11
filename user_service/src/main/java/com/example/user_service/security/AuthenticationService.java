@@ -50,6 +50,11 @@ public class AuthenticationService {
         user.setEmail(input.getEmail());
         user.setRole(optionalRole.get());
 
+        if (userRepository.existsByUsername(input.getUsername()) || userRepository.existsByEmail(input.getEmail())) {
+            throw new RuntimeException("Username hoặc email đã tồn tại");
+        }
+
+
         return userRepository.save(user);
     }
 

@@ -19,11 +19,10 @@ public class OrderItem {
 
     private Long productId;
     private Integer quantity;
-    private Double price;
-
-
 
     @ManyToOne
-    @JoinColumn(name = "order_id", nullable = false)
+    @JoinColumn(name = "order_id")
     private Order order;
+
+    // getter/setter
 }

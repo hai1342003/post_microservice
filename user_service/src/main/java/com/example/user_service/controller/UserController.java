@@ -1,8 +1,11 @@
 package com.example.user_service.controller;
 
+import com.example.user_service.dto.CartData;
+import com.example.user_service.dto.CartItemDto;
 import com.example.user_service.dto.UserDto;
 import com.example.user_service.entity.User;
 import com.example.user_service.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @AllArgsConstructor
 @RestController
@@ -66,4 +70,44 @@ public class UserController {
         userService.deleteUser(userId);
         return ResponseEntity.ok("User deleted successfully!");
     }
+
+    @PostMapping("/cart/add")
+    public ResponseEntity<?> addToCart(@RequestBody CartItemDto dto, @RequestHeader("Authorization") String token) {
+        String jwt = token.replace("Bearer ", "");
+        userService.updateCartData(jwt, dto);
+        return ResponseEntity.ok(Map.of("success", true, "message", "Item added to cart"));
+    }
+
+    @PostMapping("/cart/update")
+    public ResponseEntity<?> updateCartQuantity(@RequestBody CartItemDto dto, @RequestHeader("Authorization") String token) {
+        String jwt = token.replace("Bearer ", "");
+        userService.setCartItemQuantity(jwt, dto);
+        return ResponseEntity.ok(Map.of("success", true, "message", "Cập nhật số lượng thành công"));
+    }
+
+    @GetMapping("/cart")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> getCartData(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("success", false, "message", "Thiếu token"));
+        }
+
+        String jwt = authHeader.substring(7);
+        List<Map<String, Object>> cartData = userService.getCartData(jwt);
+        return ResponseEntity.ok(Map.of("success", true, "cartData", cartData));
+    }
+
+
+//    @GetMapping("/cart")
+//    @PreAuthorize("isAuthenticated()")
+//    public ResponseEntity<?> getCartData() {
+//        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+//        List<Map<String, Object>> cartData = userService.getCartDataByUsername(username);
+//        return ResponseEntity.ok(Map.of("success", true, "cartData", cartData));
+//    }
+
+
 }

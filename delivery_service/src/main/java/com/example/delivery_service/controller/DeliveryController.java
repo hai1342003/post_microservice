@@ -1,6 +1,5 @@
 package com.example.delivery_service.controller;
 
-import com.example.delivery_service.dto.DeliveryDTO;
 import com.example.delivery_service.dto.OrderDTO;
 import com.example.delivery_service.entity.Delivery;
 import com.example.delivery_service.service.DeliveryService;
@@ -12,10 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-
-
-
-
 
 @RestController
 @RequestMapping("/api/deliveries")

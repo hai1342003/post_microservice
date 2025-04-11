@@ -1,9 +1,9 @@
-package com.example.payment_service.service;
+package com.example.cart_service.service;
 
-import com.example.payment_service.dto.PaymentDTO;
-import com.example.payment_service.entity.Payment;
-import com.example.payment_service.entity.PaymentStatus;
-import com.example.payment_service.repository.PaymentRepository;
+import com.example.cart_service.dto.PaymentDTO;
+import com.example.cart_service.entity.Payment;
+import com.example.cart_service.entity.PaymentStatus;
+import com.example.cart_service.repository.PaymentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

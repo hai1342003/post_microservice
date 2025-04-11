@@ -1,4 +1,4 @@
-package com.example.delivery_service.configuration;
+package com.example.delivery_service.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;

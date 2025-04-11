@@ -1,4 +1,4 @@
-package com.example.payment_service.configuration;
+package com.example.cart_service.configuration;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;

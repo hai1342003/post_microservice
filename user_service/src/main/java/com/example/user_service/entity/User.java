@@ -15,6 +15,7 @@ import java.util.List;
 
 
 
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -27,18 +28,24 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "username")
+    @Column(name = "username", unique = true)
     private String username;
 
     @Column(name = "password")
     private String password;
 
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     private String email;
 
     @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
     private Role role;
+
+
+
+
+    @Column(columnDefinition = "TEXT")
+    private String cartData;
 
     public User(Long id, String name) {
 
