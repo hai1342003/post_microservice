@@ -1,9 +1,10 @@
 package com.example.order_service.entity;
 
 public enum OrderStatus {
+    ORDER_PLACED,
     PENDING,
-    PROCESSING,
+    CONFIRMED,
     SHIPPED,
     DELIVERED,
-    CANCELED
+    CANCELLED
 }

@@ -7,9 +7,12 @@ import java.util.List;
 
 public interface OrderService {
     Order datDonHangCOD(OrderDTO request);
-    Order datDonHangStripe(OrderDTO request);
+    String datDonHangStripe(OrderDTO request);
+    Order luuTamThoiDonHang(OrderDTO request);
     Order datDonHangRazorpay(OrderDTO request);
     List<Order> layTatCaDonHang();
+
+    void xacNhanThanhToanStripe(Long orderId);
     List<Order> layDonHangCuaUser(Long userId);
-    Order capNhatTrangThai(Long orderId, String status);
+    void capNhatTrangThai(Long orderId, String status);
 }

@@ -51,6 +51,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserDto getUserByUsername(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User không tồn tại"));
+        return UserMapper.mapToUserDto(user); // hoặc tự tạo tay nếu không dùng mapper
+    }
+
+
+
+    @Override
     public UserDto updateUser(Long userId, UserDto updatedUser) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new ResourceNotFoundException("User is not exists with given id" + userId)
@@ -107,7 +116,8 @@ public class UserServiceImpl implements UserService {
 
     public void updateCartData(String token, CartItemDto dto) {
         String username = jwtService.extractUsername(token);
-        User user = userRepository.findByUsername(username);
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User không tồn tại"));
         if (user == null) {
             throw new RuntimeException("User not found");
         }
@@ -152,7 +162,8 @@ public class UserServiceImpl implements UserService {
 
     public void setCartItemQuantity(String token, CartItemDto dto) {
         String username = jwtService.extractUsername(token);
-        User user = userRepository.findByUsername(username);
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User không tồn tại"));
         if (user == null) {
             throw new RuntimeException("Không tìm thấy user");
         }
@@ -204,7 +215,8 @@ public class UserServiceImpl implements UserService {
 
     public List<Map<String, Object>> getCartData(String token) {
         String username = jwtService.extractUsername(token);
-        User user = userRepository.findByUsername(username);
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User không tồn tại"));
         if (user == null) {
             throw new RuntimeException("Không tìm thấy người dùng");
         }

@@ -66,6 +66,7 @@ public class AuthenticationService {
                 )
         );
 
-        return userRepository.findByUsername(input.getUsername());
+        return userRepository.findByUsername(input.getUsername())
+                .orElseThrow(() -> new RuntimeException("User không tồn tại"));
     }
 }

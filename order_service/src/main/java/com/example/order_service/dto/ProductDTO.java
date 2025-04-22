@@ -4,19 +4,20 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderItemDTO {
-    private Long productId;
-    private Integer quantity;
+public class ProductDTO {
+    private Long id;
+    private String name;
+    private String description;
+    private Double price;
+    private String category;
 
     private String ram;
 
+    private Boolean bestseller;
 
-    private String name;
-    private Double price;
     private String image1;
 }
 

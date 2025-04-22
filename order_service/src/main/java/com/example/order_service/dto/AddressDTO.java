@@ -1,18 +1,13 @@
-package com.example.order_service.entity;
+package com.example.order_service.dto;
 
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Embeddable
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "orders")
-public class Address {
+public class AddressDTO {
     private String firstName;
     private String lastName;
     private String email;
@@ -22,5 +17,4 @@ public class Address {
     private String zipCode;
     private String country;
     private String phone;
-    // getter/setter
 }

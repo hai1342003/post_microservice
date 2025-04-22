@@ -4,6 +4,7 @@ import com.example.user_service.dto.CartData;
 import com.example.user_service.dto.CartItemDto;
 import com.example.user_service.dto.UserDto;
 import com.example.user_service.entity.User;
+//import com.example.user_service.security.UserDetailsImpl;
 import com.example.user_service.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
@@ -16,6 +17,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+
+
+
+
+
+
 
 @AllArgsConstructor
 @RestController
@@ -32,13 +39,21 @@ public class UserController {
 
 
     @GetMapping("/me")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<User> authenticatedUser() {
+//    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> authenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        User currentUser = (User) authentication.getPrincipal();
+//        User currentUser = (User) authentication.getPrincipal();
 
-        return ResponseEntity.ok(currentUser);
+
+
+//        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+//        User currentUser = userDetails.getUser();
+
+        String username = authentication.getName(); // username hiện tại
+        UserDto userDto = userService.getUserByUsername(username); // viết hàm này trong service
+        return ResponseEntity.ok(userDto);
+//        return ResponseEntity.ok(currentUser);
     }
 
     @GetMapping
@@ -98,6 +113,12 @@ public class UserController {
         String jwt = authHeader.substring(7);
         List<Map<String, Object>> cartData = userService.getCartData(jwt);
         return ResponseEntity.ok(Map.of("success", true, "cartData", cartData));
+    }
+
+    @GetMapping("/")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
+    public ResponseEntity<List<User>> fallbackAllUsers() {
+        return allUsers();
     }
 
 
