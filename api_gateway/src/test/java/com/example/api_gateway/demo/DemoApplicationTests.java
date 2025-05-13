@@ -1,6 +1,6 @@
-package com.example.apigateway.demo;
+package com.example.api_gateway.demo;
 
-import org.junit.jupiter.api.Test;
+import org.testng.annotations.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest

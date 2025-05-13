@@ -37,8 +37,13 @@ public class User implements UserDetails {
     @Column(name = "email", unique = true)
     private String email;
 
-    @OneToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
+
+
+
+
+
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
 
@@ -56,6 +61,9 @@ public class User implements UserDetails {
     }
     public User(String name, String email, String password) {
 
+    }
+
+    public User(Long id, String name, String password, Role role) {
     }
 
     @Override

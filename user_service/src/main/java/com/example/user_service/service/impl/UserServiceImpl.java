@@ -20,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -95,6 +96,8 @@ public class UserServiceImpl implements UserService {
 
         return users;
     }
+
+
 
     @Override
     public User createAdministrator(RegisterUserDto input) {
@@ -251,5 +254,19 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Lỗi khi đọc dữ liệu giỏ hàng: " + e.getMessage());
         }
     }
+
+    @Override
+    public List<UserDto> getAllShippers() {
+        Role shipperRole = roleRepository.findByName(RoleEnum.SHIPPER)
+                .orElseThrow(() -> new RuntimeException("Shipper role not found"));
+
+        List<User> shippers = userRepository.findByRole(shipperRole);
+
+        return shippers.stream()
+                .map(UserMapper::mapToUserDto)
+                .collect(Collectors.toList());
+    }
+
+
 
 }

@@ -5,6 +5,7 @@ import com.example.user_service.dto.CartItemDto;
 import com.example.user_service.dto.UserDto;
 import com.example.user_service.entity.User;
 //import com.example.user_service.security.UserDetailsImpl;
+import com.example.user_service.mapper.UserMapper;
 import com.example.user_service.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
@@ -17,11 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-
-
-
-
-
+import java.util.stream.Collectors;
 
 
 @AllArgsConstructor
@@ -100,6 +97,7 @@ public class UserController {
         return ResponseEntity.ok(Map.of("success", true, "message", "Cập nhật số lượng thành công"));
     }
 
+
     @GetMapping("/cart")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getCartData(HttpServletRequest request) {
@@ -131,4 +129,13 @@ public class UserController {
 //    }
 
 
+    @GetMapping("/shippers")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('SUPER_ADMIN')")
+    public ResponseEntity<List<UserDto>> getAllShippers() {
+        List<UserDto> shippers = userService.getAllShippers(); // đã return DTO trong service
+        return ResponseEntity.ok(shippers);
+    }
+
+
 }
+

@@ -1,9 +1,6 @@
     package com.example.order_service.service.impl;
 
-    import com.example.order_service.dto.AddressDTO;
-    import com.example.order_service.dto.OrderDTO;
-    import com.example.order_service.dto.OrderItemDTO;
-    import com.example.order_service.dto.UserDTO;
+    import com.example.order_service.dto.*;
     import com.example.order_service.entity.Address;
     import com.example.order_service.entity.Order;
     import com.example.order_service.entity.OrderItem;
@@ -11,6 +8,7 @@
     import com.example.order_service.entity.PaymentMethod;
     import com.example.order_service.repository.OrderItemRepository;
     import com.example.order_service.repository.OrderRepository;
+    import com.example.order_service.service.DeliveryClient;
     import com.example.order_service.service.OrderService;
     import com.example.order_service.service.StripeService;
     import com.example.order_service.service.UserClient;
@@ -18,13 +16,17 @@
     import lombok.RequiredArgsConstructor;
     import org.springframework.stereotype.Service;
 
+    import java.time.LocalDate;
     import java.time.LocalDateTime;
     import java.util.ArrayList;
     import java.util.List;
+    import java.util.UUID;
+
 
     @Service
     @RequiredArgsConstructor
     public class OrderServiceImpl implements OrderService {
+
 
 
         private final OrderRepository orderRepository;
@@ -33,6 +35,12 @@
         private final UserClient userClient;
 
         private final StripeService stripeService;
+
+
+        private final DeliveryClient deliveryClient;
+
+
+
 
         @Override
         public Order datDonHangCOD(OrderDTO request) {
@@ -85,6 +93,28 @@
             orderItemRepository.saveAll(orderItems);
 
             System.out.println("Received order: " + request);
+
+            // GỌI DELIVERY SERVICE
+            DeliveryDTO deliveryDTO = new DeliveryDTO();
+            deliveryDTO.setTrackingNumber(UUID.randomUUID().toString().substring(0, 8));
+            deliveryDTO.setStatus("PENDING");
+            deliveryDTO.setDeliveryDate(LocalDate.now().plusDays(3));
+            deliveryDTO.setOriginAddress("Main Warehouse");
+            deliveryDTO.setDestinationAddress(address.getStreet() + ", " + address.getCity() + ", " + address.getState());
+            deliveryDTO.setShippingCost(10.0);
+            deliveryDTO.setDeliveryMethod("COD");
+            deliveryDTO.setOrderId(order.getId());
+
+
+
+            try {
+                deliveryClient.createDelivery(deliveryDTO);
+                System.out.println("✅ Tạo delivery thành công cho OrderId: " + order.getId());
+            } catch (Exception e) {
+                System.err.println("❌ Lỗi khi tạo delivery: " + e.getMessage());
+            }
+
+
             return order;
         }
 
@@ -142,6 +172,28 @@
             order.setPayment(true);
             order.setStatus(OrderStatus.ORDER_PLACED);
             orderRepository.save(order);
+
+
+            try {
+                DeliveryDTO deliveryDTO = new DeliveryDTO();
+                deliveryDTO.setTrackingNumber(UUID.randomUUID().toString().substring(0, 8));
+                deliveryDTO.setStatus("PENDING");
+                deliveryDTO.setDeliveryDate(LocalDate.now().plusDays(3));
+                deliveryDTO.setOriginAddress("Main Warehouse");
+
+                Address address = order.getAddress();
+                deliveryDTO.setDestinationAddress(
+                        address.getStreet() + ", " + address.getCity() + ", " + address.getState()
+                );
+                deliveryDTO.setShippingCost(10.0);
+                deliveryDTO.setDeliveryMethod("STRIPE");
+                deliveryDTO.setOrderId(order.getId());
+
+                deliveryClient.createDelivery(deliveryDTO);
+                System.out.println("✅ Tạo delivery thành công cho đơn Stripe OrderId: " + order.getId());
+            } catch (Exception e) {
+                System.err.println("❌ Lỗi khi tạo delivery đơn Stripe: " + e.getMessage());
+            }
         }
 
     }

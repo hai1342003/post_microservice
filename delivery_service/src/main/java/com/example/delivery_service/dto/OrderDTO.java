@@ -1,6 +1,7 @@
 package com.example.delivery_service.dto;
 
-import com.example.order_service.dto.OrderItemDTO;
+//import com.example.order_service.dto.AddressDTO;
+//import com.example.order_service.dto.OrderItemDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,10 +14,15 @@ import java.util.List;
 @AllArgsConstructor
 public class OrderDTO {
     private Long id;
-    private Long customerId;
+    private Long userId;
+
+
+    private Double amount;
+    private AddressDTO address;
     private List<OrderItemDTO> items;
-    private Double totalPrice;
-    private LocalDateTime orderDate;
     private String status;
+    private String paymentMethod;
+    private boolean payment;
+    private LocalDateTime date;
 }
 

@@ -7,13 +7,13 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="delivery-service" />
         <module name="user_service" />
         <module name="order_service" />
         <module name="payment_service" />
-        <module name="api-gateway" />
+        <module name="api_gateway" />
         <module name="product_service" />
         <module name="demo" />
+        <module name="delivery_service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -23,7 +23,6 @@
       <module name="delivery-service (3)" target="17" />
       <module name="delivery-service (4)" target="17" />
       <module name="delivery-service (5)" target="17" />
-      <module name="delivery_service" target="17" />
       <module name="order-service" target="17" />
       <module name="payment-service" target="17" />
       <module name="product-service" target="17" />
@@ -32,9 +31,8 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="api-gateway" options="-parameters" />
+      <module name="api_gateway" options="-parameters" />
       <module name="cart_service" options="-parameters" />
-      <module name="delivery-service" options="-parameters" />
       <module name="delivery-service (1)" options="-parameters" />
       <module name="delivery-service (2)" options="-parameters" />
       <module name="delivery-service (3)" options="-parameters" />

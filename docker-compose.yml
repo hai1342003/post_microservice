@@ -16,7 +16,7 @@ services:
 
   delivery-service:
     build:
-      context: ./delivery-service
+      context: ./delivery_service
       dockerfile: Dockerfile
     container_name: delivery_service
     ports:
@@ -72,6 +72,27 @@ services:
       - database
 
 
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: server
+    ports:
+      - "8761:8761"
+    depends_on:
+      - database
+
+  api-gateway:
+    build:
+      context: ./api_gateway
+      dockerfile: Dockerfile
+    container_name: api_gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - server
+
+
   database:
     image: postgres:latest
     container_name: postgres_db
@@ -83,16 +104,11 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
 
-  rabbitmq:
-    image: rabbitmq:management
-    container_name: rabbitmq
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    environment:
-      RABBITMQ_DEFAULT_USER: guest
-      RABBITMQ_DEFAULT_PASS: guest
-
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   db-data:

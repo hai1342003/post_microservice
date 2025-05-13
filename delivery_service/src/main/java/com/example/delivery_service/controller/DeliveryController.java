@@ -1,88 +1,167 @@
 package com.example.delivery_service.controller;
 
-import com.example.delivery_service.dto.OrderDTO;
 import com.example.delivery_service.entity.Delivery;
+import com.example.delivery_service.entity.DeliveryStatus;
 import com.example.delivery_service.service.DeliveryService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+
 
 @RestController
 @RequestMapping("/api/deliveries")
+@RequiredArgsConstructor
 public class DeliveryController {
-    @Autowired
-    private DeliveryService deliveryService;
+    private final DeliveryService deliveryService;
 
 
-    @GetMapping("/orders")
-    public ResponseEntity<List<OrderDTO>> getAllOrders() {
-        return ResponseEntity.ok(deliveryService.getAllOrders());
-    }
-
-    @Operation(summary = "Tạo đơn hàng mới", description = "Tạo một đơn hàng mới")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Tạo đơn hàng thành công"),
-            @ApiResponse(responseCode = "400", description = "Dữ liệu không hợp lệ")
-    })
-    @PostMapping
-    public ResponseEntity<Delivery> createDelivery(@RequestBody Delivery delivery) {
-        return new ResponseEntity<>(deliveryService.createDelivery(delivery), HttpStatus.CREATED);
-    }
-
-    @Operation(summary = "Lấy thông tin đơn hàng", description = "Lấy thông tin tất cả các đơn hàng")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Lấy thành công"),
-            @ApiResponse(responseCode = "404", description = "Không tìm thấy đơn hàng")
-    })
     @GetMapping
-    public ResponseEntity<List<Delivery>> getAllDeliveries(@RequestHeader(value = "Authorization", required = false) String authHeader) {
-        System.out.println("Received JWT: " + authHeader);
-        return new ResponseEntity<>(deliveryService.getAllDeliveries(), HttpStatus.OK);
+    public ResponseEntity<?> layTatCaDonGiaoHang() {
+        try {
+            List<Delivery> deliveries = deliveryService.getAllDeliveries();
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("deliveries", deliveries);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("message", "Lỗi khi lấy danh sách đơn giao hàng: " + e.getMessage());
+            return ResponseEntity.status(500).body(response);
+        }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Delivery> getDeliveryById(@PathVariable Long id) {
-        return new ResponseEntity<>(deliveryService.getDeliveryById(id), HttpStatus.OK);
+    public ResponseEntity<?> layDonGiaoHangTheoId(@PathVariable Long id) {
+        try {
+            Delivery delivery = deliveryService.getDeliveryById(id);
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("delivery", delivery);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("message", "Lỗi khi lấy đơn giao hàng theo ID: " + e.getMessage());
+            return ResponseEntity.status(500).body(response);
+        }
     }
 
 
-    @GetMapping("/{trackingNumber}")
-    public ResponseEntity<Delivery> getDeliveryByTrackingNumber(@PathVariable String trackingNumber) {
-        return new ResponseEntity<>(deliveryService.getDeliveryByTrackingNumber(trackingNumber), HttpStatus.OK);
+    @GetMapping("/assigned/{shipperId}")
+    public ResponseEntity<?> layDonGiaoTheoShipper(@PathVariable Long shipperId) {
+        try {
+            List<Delivery> deliveries = deliveryService.getDeliveriesByShipperId(shipperId);
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("deliveries", deliveries);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("message", "Lỗi khi lấy đơn theo shipper: " + e.getMessage());
+            return ResponseEntity.status(500).body(response);
+        }
     }
 
-    @PutMapping("/{id}/status")
-    public ResponseEntity<Delivery> updateDeliveryStatus(@PathVariable Long id, @RequestParam String status) {
-        return new ResponseEntity<>(deliveryService.updateDeliveryStatus(id, status), HttpStatus.OK);
+    @PostMapping
+    public ResponseEntity<?> taoDonGiaoHang(@RequestBody Delivery delivery) {
+        try {
+            Delivery saved = deliveryService.createDelivery(delivery);
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Tạo đơn giao hàng thành công!");
+            response.put("delivery", saved);
+            return ResponseEntity.status(201).body(response);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("message", "Lỗi khi tạo đơn giao hàng: " + e.getMessage());
+            return ResponseEntity.status(500).body(response);
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> capNhatDonGiaoHang(@PathVariable Long id, @RequestBody Delivery delivery) {
+        try {
+            Delivery updated = deliveryService.updateDelivery(id, delivery);
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Cập nhật đơn giao hàng thành công!");
+            response.put("delivery", updated);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("message", "Lỗi khi cập nhật đơn giao hàng: " + e.getMessage());
+            return ResponseEntity.status(500).body(response);
+        }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDelivery(@PathVariable Long id) {
-        deliveryService.deleteDelivery(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<?> xoaDonGiaoHang(@PathVariable Long id) {
+        try {
+            deliveryService.deleteDelivery(id);
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Xóa đơn giao hàng thành công!");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("message", "Lỗi khi xóa đơn giao hàng: " + e.getMessage());
+            return ResponseEntity.status(500).body(response);
+        }
     }
 
-    // Lấy chi tiết đơn hàng từ Order Service
-    @GetMapping("/{orderId}/details")
-    public ResponseEntity<OrderDTO> getOrderDetails(@PathVariable Long orderId) {
-        return ResponseEntity.ok(deliveryService.getOrderDetails(orderId));
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<?> capNhatTrangThaiDon(@PathVariable Long id, @RequestParam("status") DeliveryStatus status) {
+        try {
+            Delivery updated = deliveryService.updateDeliveryStatus(id, status);
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Cập nhật trạng thái đơn thành công!");
+            response.put("delivery", updated);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("message", "Lỗi khi cập nhật trạng thái đơn: " + e.getMessage());
+            return ResponseEntity.status(500).body(response);
+        }
     }
 
-    // Cập nhật trạng thái đơn hàng khi giao xong
-    @PutMapping("/{orderId}/status")
-    public ResponseEntity<Void> updateOrderStatus(@PathVariable Long orderId, @RequestParam String status) {
-        deliveryService.updateOrderStatus(orderId, status);
-        return ResponseEntity.ok().build();
+
+
+
+
+
+    @PatchMapping("/{id}/confirm")
+    public ResponseEntity<?> confirmDelivery(@PathVariable Long id, @RequestParam(required = false) Boolean approved) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            if (approved == null) {
+                throw new IllegalArgumentException("approved parameter is required");
+            }
+            deliveryService.confirmDelivery(id, approved);
+            response.put("success", true);
+            response.put("message", "Delivery confirmation updated");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Xác nhận thất bại: " + e.getMessage());
+            return ResponseEntity.status(400).body(response);
+        }
     }
 
-    // Lấy danh sách đơn hàng cần giao
-    @GetMapping("/pending")
-    public ResponseEntity<List<OrderDTO>> getPendingOrders() {
-        return ResponseEntity.ok(deliveryService.getPendingOrders());
-    }
+
 }
+
+
+

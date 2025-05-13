@@ -1,5 +1,7 @@
 package com.example.user_service.dto;
 
+import com.example.user_service.entity.Role;
+import com.example.user_service.entity.RoleEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +16,9 @@ public class UserDto {
     private String name;
     private String password;
 
+    private Role role;
+
     public UserDto(Long id, String username) {
     }
 }
+

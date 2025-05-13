@@ -1,4 +1,4 @@
-package com.example.apigateway;
+package com.example.api_gateway;
 
 import com.google.common.net.HttpHeaders;
 import org.springframework.boot.SpringApplication;

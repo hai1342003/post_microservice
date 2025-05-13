@@ -9,6 +9,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -39,7 +41,7 @@ public class Product {
     @Column(nullable = false)
     private Boolean bestseller;
 
-    // Lưu tên file ảnh hoặc URL
 
+    // Lưu tên file ảnh hoặc URL
     private String image1;
 }

@@ -45,26 +45,34 @@ public class AuthenticationController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> register(@RequestBody RegisterUserDto registerUserDto) {
-        User registeredUser = authenticationService.signup(registerUserDto);
-
-        String jwtToken = jwtService.generateToken(registeredUser);
-
-        return ResponseEntity.ok(Map.of(
-                "success", true,
-                "token", jwtToken
-        ));
+        try {
+            User registeredUser = authenticationService.signup(registerUserDto);
+            String jwtToken = jwtService.generateToken(registeredUser);
+            return ResponseEntity.ok(Map.of("success", true, "token", jwtToken));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(400).body(Map.of("success", false, "message", e.getMessage()));
+        }
     }
+
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticate(@RequestBody LoginUserDto loginUserDto) {
-        User authenticatedUser = authenticationService.authenticate(loginUserDto);
-        String jwtToken = jwtService.generateToken(authenticatedUser);
+        try {
+            User authenticatedUser = authenticationService.authenticate(loginUserDto);
+            String jwtToken = jwtService.generateToken(authenticatedUser);
 
-        return ResponseEntity.ok(Map.of(
-                "success", true,
-                "token", jwtToken,
-                "expiresAt", jwtService.getExpirationTime()
-        ));
+            return ResponseEntity.ok(Map.of(
+                    "success", true,
+                    "token", jwtToken,
+                    "expiresAt", jwtService.getExpirationTime()
+            ));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(
+                    "success", false,
+                    "message", e.getMessage()
+            ));
+        }
     }
+
 
 }

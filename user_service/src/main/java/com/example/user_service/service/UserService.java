@@ -18,7 +18,11 @@ public interface UserService {
 
     UserDto updateUser(Long userId, UserDto updatedUser);
 
+
+
     void deleteUser(Long userId);
+
+
 
     List<User> allUsers();
 
@@ -30,5 +34,7 @@ public interface UserService {
     void setCartItemQuantity(String token, CartItemDto dto);
 
     List<Map<String, Object>> getCartData(String token);
+
+    List<UserDto> getAllShippers();
 }
 

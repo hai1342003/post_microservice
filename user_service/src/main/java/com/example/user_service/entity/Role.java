@@ -11,6 +11,9 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
 
+
+
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,8 +21,6 @@ import java.util.Date;
 @Table(name = "roles")
 @Entity
 //@RedisHash("Role")
-
-
 public class Role {
 
     @Id
@@ -37,6 +38,7 @@ public class Role {
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")
     private Date createdAt;
+
 
     @UpdateTimestamp
     @Column(name = "updated_at")

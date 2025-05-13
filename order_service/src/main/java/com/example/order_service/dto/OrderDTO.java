@@ -26,6 +26,5 @@ public class OrderDTO {
     private String status;
     private String paymentMethod;
     private boolean payment;
-
     private LocalDateTime date;
 }

@@ -44,29 +44,41 @@ public class AuthenticationService {
             return null;
         }
 
+
+
+
+        if (userRepository.existsByUsername(input.getUsername())) {
+            throw new RuntimeException("Username does not exist");
+        }
+        if (userRepository.existsByEmail(input.getEmail())) {
+            throw new RuntimeException("Email does not exist");
+        }
+
         User user = new User();
         user.setUsername(input.getUsername());
         user.setPassword(passwordEncoder.encode(input.getPassword()));
         user.setEmail(input.getEmail());
         user.setRole(optionalRole.get());
 
-        if (userRepository.existsByUsername(input.getUsername()) || userRepository.existsByEmail(input.getEmail())) {
-            throw new RuntimeException("Username hoặc email đã tồn tại");
-        }
+
 
 
         return userRepository.save(user);
     }
 
     public User authenticate(LoginUserDto input) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        input.getUsername(),
-                        input.getPassword()
-                )
-        );
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            input.getUsername(),
+                            input.getPassword()
+                    )
+            );
+        } catch (Exception e) {
+            throw new RuntimeException("Invalid username or password");
+        }
 
         return userRepository.findByUsername(input.getUsername())
-                .orElseThrow(() -> new RuntimeException("User không tồn tại"));
+                .orElseThrow(() -> new RuntimeException("User does not exist"));
     }
 }

@@ -5,10 +5,10 @@ FROM openjdk:17-jdk-slim
 WORKDIR /app
 
 # Copy the JAR file built by Maven/Gradle
-COPY target/delivery-service-0.0.1-SNAPSHOT.jar delivery-service-0.0.1-SNAPSHOT.jar
+COPY target/user_service-0.0.1-SNAPSHOT.jar user_service-0.0.1-SNAPSHOT.jar
 
 # Expose the port your service runs on
 EXPOSE 8085
 
 # Command to run the application
-ENTRYPOINT ["java", "-jar", "delivery-service-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "user_service-0.0.1-SNAPSHOT.jar"]
