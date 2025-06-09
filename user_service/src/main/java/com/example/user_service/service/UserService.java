@@ -9,6 +9,8 @@ import com.example.user_service.entity.User;
 import java.util.List;
 import java.util.Map;
 
+
+
 public interface UserService {
     UserDto createUser(UserDto userDto);
 
@@ -28,7 +30,7 @@ public interface UserService {
 
     User createAdministrator(RegisterUserDto registerUserDto);
 
-
+    User createShipper(RegisterUserDto registerUserDto);
     void updateCartData(String token, CartItemDto dto);
 
     void setCartItemQuantity(String token, CartItemDto dto);

@@ -48,10 +48,10 @@ public class AuthenticationService {
 
 
         if (userRepository.existsByUsername(input.getUsername())) {
-            throw new RuntimeException("Username does not exist");
+            throw new RuntimeException("Username already exists");
         }
         if (userRepository.existsByEmail(input.getEmail())) {
-            throw new RuntimeException("Email does not exist");
+            throw new RuntimeException("Email already exists");
         }
 
         User user = new User();

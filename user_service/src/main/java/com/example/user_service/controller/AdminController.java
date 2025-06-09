@@ -25,8 +25,9 @@ public class AdminController {
     @PreAuthorize("hasRole('SUPER_ADMIN')")
     public ResponseEntity<User> createAdministrator(@RequestBody RegisterUserDto registerUserDto) {
         User createdAdmin = userService.createAdministrator(registerUserDto);
-
         return ResponseEntity.ok(createdAdmin);
     }
 }
+
+
 

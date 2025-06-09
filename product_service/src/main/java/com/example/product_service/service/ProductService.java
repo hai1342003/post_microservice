@@ -97,14 +97,14 @@ public class ProductService {
 
     private void simulateSlowService() {
         try {
-            Thread.sleep(3000); // Giả lập độ trễ
+            Thread.sleep(3000);
         } catch (InterruptedException e) {
             throw new IllegalStateException(e);
         }
     }
 
     public boolean deleteProductById(Long id) {
-        Optional<Product> productOpt = productRepository.findById(id); // dùng java.util.Optional
+        Optional<Product> productOpt = productRepository.findById(id);
         if (productOpt.isPresent()) {
             productRepository.deleteById(id);
             return true;

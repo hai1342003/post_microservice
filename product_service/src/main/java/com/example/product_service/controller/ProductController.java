@@ -106,18 +106,18 @@ public class ProductController {
             if (deleted) {
                 Map<String, Object> response = new HashMap<>();
                 response.put("success", true);
-                response.put("message", "Xóa sản phẩm thành công!");
+                response.put("message", "Product deleted successfully!");
                 return ResponseEntity.ok(response);
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
                         "success", false,
-                        "message", "Không tìm thấy sản phẩm!"
+                        "message", "Product not found!"
                 ));
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
                     "success", false,
-                    "message", "Lỗi khi xóa sản phẩm: " + e.getMessage()
+                    "message", "Error deleting product: " + e.getMessage()
             ));
         }
     }

@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
+
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -102,6 +103,23 @@ public class UserServiceImpl implements UserService {
     @Override
     public User createAdministrator(RegisterUserDto input) {
         Optional<Role> optionalRole = roleRepository.findByName(RoleEnum.ADMIN);
+
+        if (optionalRole.isEmpty()) {
+            return null;
+        }
+
+        User user = new User();
+        user.setUsername(input.getUsername());
+        user.setEmail(input.getEmail());
+        user.setPassword(passwordEncoder.encode(input.getPassword()));
+        user.setRole(optionalRole.get());
+
+        return userRepository.save(user);
+    }
+
+    @Override
+    public User createShipper(RegisterUserDto input) {
+        Optional<Role> optionalRole = roleRepository.findByName(RoleEnum.SHIPPER);
 
         if (optionalRole.isEmpty()) {
             return null;

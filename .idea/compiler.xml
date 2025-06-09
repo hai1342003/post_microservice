@@ -10,6 +10,7 @@
         <module name="user_service" />
         <module name="order_service" />
         <module name="payment_service" />
+        <module name="ai_chat_service" />
         <module name="api_gateway" />
         <module name="product_service" />
         <module name="demo" />
@@ -31,6 +32,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="ai_chat_service" options="-parameters" />
       <module name="api_gateway" options="-parameters" />
       <module name="cart_service" options="-parameters" />
       <module name="delivery-service (1)" options="-parameters" />

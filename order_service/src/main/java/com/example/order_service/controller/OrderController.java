@@ -99,7 +99,6 @@ public class OrderController {
 
 
 
-
     @PostMapping("/userorders")
     public ResponseEntity<?> layDonHangTheoUserDangNhap() {
         UserDTO user = userClient.layThongTinNguoiDungDangNhap();
@@ -216,6 +215,46 @@ public class OrderController {
         }
     }
 
+
+
+
+
+
+
+
+
+    @GetMapping("/stats/overview")
+    public ResponseEntity<?> thongKeTongQuan() {
+        try {
+            List<Order> orders = orderService.layTatCaDonHang();
+
+            int totalOrders = orders.size();
+            double totalRevenue = orders.stream()
+                    .filter(Order::getPayment)
+                    .mapToDouble(Order::getAmount)
+                    .sum();
+
+            Map<String, Long> statusCounts = orders.stream()
+                    .collect(java.util.stream.Collectors.groupingBy(
+                            order -> order.getStatus().name(),
+                            java.util.stream.Collectors.counting()
+                    ));
+
+            Map<String, Object> response = new HashMap<>();
+
+            response.put("success", true);
+            response.put("totalOrders", totalOrders);
+            response.put("totalRevenue", totalRevenue);
+            response.put("statusCounts", statusCounts);
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("message", "Lỗi khi lấy thống kê tổng quan: " + e.getMessage());
+            return ResponseEntity.status(500).body(response);
+        }
+    }
 }
 
 

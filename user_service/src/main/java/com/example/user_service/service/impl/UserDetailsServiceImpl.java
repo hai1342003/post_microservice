@@ -14,7 +14,6 @@ import java.util.ArrayList;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
-
     @Autowired
     private UserRepository userRepository;
 
@@ -30,3 +29,5 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     }
 }
+
+

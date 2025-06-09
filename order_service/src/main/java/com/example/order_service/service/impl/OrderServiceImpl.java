@@ -81,7 +81,6 @@
                 item.setQuantity(itemDTO.getQuantity());
                 item.setRam(itemDTO.getRam());
                 item.setOrder(order);
-
                 item.setName(itemDTO.getName());
                 item.setPrice(itemDTO.getPrice());
                 item.setImage1(itemDTO.getImage1());
