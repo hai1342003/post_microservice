@@ -1,28 +1,31 @@
-//package com.example.delivery_service.configuration;
-//
-//import org.springframework.amqp.core.Binding;
-//import org.springframework.amqp.core.BindingBuilder;
-//import org.springframework.amqp.core.Queue;
-//import org.springframework.amqp.core.TopicExchange;
-//import org.springframework.context.annotation.Bean;
-//import org.springframework.context.annotation.Configuration;
-//
-//@Configuration
-//public class RabbitMQConfig {
-//
-//
-//    @Bean
-//    public Queue myQueue() {
-//        return new Queue("order.queue", false);
-//    }
-//
-//    @Bean
-//    public TopicExchange exchange() {
-//        return new TopicExchange("order.exchange");
-//    }
-//
-//    @Bean
-//    public Binding binding(Queue queue, TopicExchange exchange) {
-//        return BindingBuilder.bind(queue).to(exchange).with("routing.key");
-//    }
-//}
+package com.example.delivery_service.config;
+
+import org.springframework.amqp.core.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class RabbitMQConfig {
+
+    public static final String ORDER_QUEUE = "order.queue";
+    public static final String ORDER_EXCHANGE = "order.exchange";
+    public static final String ORDER_ROUTING_KEY = "order.routing.key";
+
+    @Bean
+    public Queue orderQueue() {
+        return new Queue(ORDER_QUEUE);
+    }
+
+    @Bean
+    public TopicExchange orderExchange() {
+        return new TopicExchange(ORDER_EXCHANGE);
+    }
+
+    @Bean
+    public Binding binding() {
+        return BindingBuilder
+                .bind(orderQueue())
+                .to(orderExchange())
+                .with(ORDER_ROUTING_KEY);
+    }
+}

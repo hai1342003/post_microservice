@@ -1,16 +1,9 @@
 package com.example.delivery_service.service;
 
-import com.example.delivery_service.dto.OrderDTO;
 import com.example.delivery_service.entity.Delivery;
 import com.example.delivery_service.entity.DeliveryStatus;
 import com.example.delivery_service.repository.DeliveryRepository;
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
-import org.hibernate.query.Order;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;

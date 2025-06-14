@@ -12,6 +12,7 @@
         <module name="payment_service" />
         <module name="ai_chat_service" />
         <module name="api_gateway" />
+        <module name="email_service" />
         <module name="product_service" />
         <module name="demo" />
         <module name="delivery_service" />
@@ -42,6 +43,7 @@
       <module name="delivery-service (5)" options="-parameters" />
       <module name="delivery_service" options="-parameters" />
       <module name="demo" options="-parameters" />
+      <module name="email_service" options="-parameters" />
       <module name="order-service" options="-parameters" />
       <module name="order_service" options="-parameters" />
       <module name="payment-service" options="-parameters" />

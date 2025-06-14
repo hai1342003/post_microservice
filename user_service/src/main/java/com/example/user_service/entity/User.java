@@ -66,6 +66,9 @@ public class User implements UserDetails {
     public User(Long id, String name, String password, Role role) {
     }
 
+    public User(Long id, String name, String password, String email, Role role) {
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role.getName().toString());

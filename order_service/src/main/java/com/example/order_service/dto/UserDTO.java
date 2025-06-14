@@ -13,6 +13,7 @@ public class UserDTO {
     private Long id;
     private String name;
     private String password;
+    private String email;
 
     public UserDTO(Long id, String username) {
     }

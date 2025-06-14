@@ -11,6 +11,8 @@ public class UserMapper {
 
                 user.getPassword(),
 
+
+                user.getEmail(),
                 user.getRole()
         );
     }
@@ -21,6 +23,7 @@ public class UserMapper {
                 userDto.getName(),
 
                 userDto.getPassword(),
+                userDto.getEmail(),
                 userDto.getRole()
         );
     }

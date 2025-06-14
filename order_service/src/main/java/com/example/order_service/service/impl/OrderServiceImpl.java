@@ -1,5 +1,6 @@
     package com.example.order_service.service.impl;
 
+    import com.example.order_service.config.RabbitMQConfig;
     import com.example.order_service.dto.*;
     import com.example.order_service.entity.Address;
     import com.example.order_service.entity.Order;
@@ -8,12 +9,11 @@
     import com.example.order_service.entity.PaymentMethod;
     import com.example.order_service.repository.OrderItemRepository;
     import com.example.order_service.repository.OrderRepository;
-    import com.example.order_service.service.DeliveryClient;
-    import com.example.order_service.service.OrderService;
-    import com.example.order_service.service.StripeService;
-    import com.example.order_service.service.UserClient;
+    import com.example.order_service.service.*;
 
     import lombok.RequiredArgsConstructor;
+    import org.springframework.amqp.rabbit.core.RabbitTemplate;
+    import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.stereotype.Service;
 
     import java.time.LocalDate;
@@ -39,7 +39,15 @@
 
         private final DeliveryClient deliveryClient;
 
+        private final EmailClient emailClient;
 
+        private RabbitTemplate rabbitTemplate;
+
+
+        @Autowired
+        public void setRabbitTemplate(RabbitTemplate rabbitTemplate) {
+            this.rabbitTemplate = rabbitTemplate;
+        }
 
 
         @Override
@@ -107,7 +115,36 @@
 
 
             try {
-                deliveryClient.createDelivery(deliveryDTO);
+//                deliveryClient.createDelivery(deliveryDTO);
+                DeliveryMessage message = new DeliveryMessage();
+                message.setOrderId(order.getId());
+                message.setTrackingNumber(UUID.randomUUID().toString().substring(0, 8));
+                message.setStatus("PENDING");
+                message.setOriginAddress("Main Warehouse");
+                message.setDestinationAddress(address.getStreet() + ", " + address.getCity() + ", " + address.getState());
+                message.setShippingCost(10.0);
+                message.setDeliveryMethod("COD");
+                message.setDeliveryDate(LocalDate.now().plusDays(3));
+
+                rabbitTemplate.convertAndSend(
+                        RabbitMQConfig.ORDER_EXCHANGE,
+                        RabbitMQConfig.ORDER_ROUTING_KEY,
+                        message
+                );
+
+                OrderEmailRequest emailRequest = new OrderEmailRequest();
+                emailRequest.setEmail(userDTO.getEmail());
+                emailRequest.setCustomerName(userDTO.getName());
+                emailRequest.setOrderId(order.getId());
+                emailRequest.setStatus(order.getStatus());
+                emailRequest.setItems(request.getItems());
+                emailRequest.setTotalAmount(order.getAmount());
+                emailRequest.setPaymentMethod(order.getPaymentMethod().name());
+                emailRequest.setAddress(address.getStreet() + ", " + address.getCity() + ", " + address.getState());
+                emailRequest.setDate(order.getDate().toString());
+                emailClient.sendOrderEmail(emailRequest);
+
+
                 System.out.println("✅ Tạo delivery thành công cho OrderId: " + order.getId());
             } catch (Exception e) {
                 System.err.println("❌ Lỗi khi tạo delivery: " + e.getMessage());
@@ -190,6 +227,35 @@
 
                 deliveryClient.createDelivery(deliveryDTO);
                 System.out.println("✅ Tạo delivery thành công cho đơn Stripe OrderId: " + order.getId());
+
+                UserDTO userDTO = userClient.layThongTinNguoiDungDangNhap();
+
+                OrderEmailRequest emailRequest = new OrderEmailRequest();
+                emailRequest.setEmail(userDTO.getEmail());
+                emailRequest.setCustomerName(userDTO.getName());
+                emailRequest.setOrderId(order.getId());
+                emailRequest.setStatus(order.getStatus());
+
+                List<OrderItemDTO> itemDTOs = new ArrayList<>();
+                for (OrderItem item : order.getItems()) {
+                    OrderItemDTO dto = new OrderItemDTO();
+                    dto.setProductId(item.getProductId());
+                    dto.setQuantity(item.getQuantity());
+                    dto.setRam(item.getRam());
+                    dto.setName(item.getName());
+                    dto.setPrice(item.getPrice());
+                    dto.setImage1(item.getImage1());
+                    itemDTOs.add(dto);
+                }
+                emailRequest.setItems(itemDTOs);
+
+                emailRequest.setTotalAmount(order.getAmount());
+                emailRequest.setPaymentMethod(order.getPaymentMethod().name());
+                emailRequest.setAddress(order.getAddress().getStreet() + ", " + order.getAddress().getCity() + ", " + order.getAddress().getState());
+                emailRequest.setDate(order.getDate().toString());
+
+                emailClient.sendOrderEmail(emailRequest);
+
             } catch (Exception e) {
                 System.err.println("❌ Lỗi khi tạo delivery đơn Stripe: " + e.getMessage());
             }
